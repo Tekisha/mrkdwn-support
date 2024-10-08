@@ -17,4 +17,4 @@ package warmup_task
  * mathematical definition and provides optimal time and space complexity.
  */
 
-def f_iteration(x: Long) = 1L << x //2^x
+def f_bitshifts(x: Long) = 1L << x //2^x
