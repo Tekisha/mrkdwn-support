@@ -11,7 +11,7 @@ def main(): Unit = {
   val tree3 = Node(List(Identifier("a"), Node(List(Identifier("b"), Identifier("x"))), Identifier("d")))
   val result2 = tree1.isEqual(tree3)
   println(result2)
-
+///////////////////////////////////////////
   val id = Identifier("abc")
   println(id.toString)
 
@@ -24,4 +24,11 @@ def main(): Unit = {
     case Right(tree) => println(s"Parsed tree: $tree")
     case Left(error) => println(s"Failed to parse: $error")
   }
+/////////////////////////////////////////////
+  val searchTree = Node(List(Identifier("b"), Identifier("c")))
+  val replacement = Identifier("x")
+
+  val newTree = TreeUtils.replace(tree1, searchTree, replacement)
+
+  println(newTree)
 }
