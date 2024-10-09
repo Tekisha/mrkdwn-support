@@ -1,6 +1,11 @@
 package main_task
 
 object Parser {
+  /**
+   *  Tokenizes the input string into meaningful components (identifiers, parentheses, and whitespace).
+   *  Filters out any extraneous whitespace and returns the list of tokens.
+   *  If the input is empty or contains only whitespace, it returns and error message.
+   */
   private def tokenize(input: String): Either[String, List[String]] = {
     val pattern = """\(|\)|[a-zA-Z0-9]+|\s+""".r
     val tokens = pattern.findAllIn(input).toList.filterNot(_.trim.isEmpty)
@@ -9,6 +14,11 @@ object Parser {
     else Left("Input string is empty or contains only whitespace.")
   }
 
+  /**
+   * Parses a list of tokens into a Tree structure (either a Node or Identifier)
+   * Differentiates between Nodes (denoted by parentheses) and Identifiers (alphanumeric strings).
+   * Handles errors like unmatched parentheses, unexpected end of input, and invalid tokens.
+   */
   private def parse(tokens: List[String]): Either[String, (Tree, List[String])] = tokens match {
     case Nil => Left("Unexpected end of input.")
 
@@ -24,6 +34,11 @@ object Parser {
     case _ => Left("Invalid token encountered.")
   }
 
+  /**
+   *Helper function to recursively parse children trees for a Node.
+   * Accumulates the parsed trees and returns them along with any remaining tokens.
+   * Handles nested structures and ensures no unmatched parentheses.
+   */
   private def parseChildren(tokens: List[String], acc: List[Tree] = List()): Either[String, (List[Tree], List[String])] = tokens match {
     case Nil => Left("Unexpected end of input inside of node.")
 
@@ -34,6 +49,11 @@ object Parser {
     }
   }
 
+  /**
+   * Main function to parse a string input representing a tree in TL format.
+   * First tokenizes the input, then parses it into a Tree structure.
+   * Returns an error if tokenization or parsing fails, or if there are unconsumed tokens remaining.
+   */
   def parseString(input: String): Either[String, Tree] = {
     tokenize(input) match {
       case Left(error) => Left(s"Tokenization failed: $error")
