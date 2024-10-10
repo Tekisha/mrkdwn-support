@@ -6,3 +6,5 @@ lazy val root = (project in file("."))
   .settings(
     name := "jetbrains-task"
   )
+
+libraryDependencies +="org.scalatest" %% "scalatest" % "3.2.18" % Test

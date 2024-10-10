@@ -1,7 +1,7 @@
 import org.scalatest.funsuite.AnyFunSuite
 import warmup_task.{f_bitshift, f_memoization, f_recursive}
 
-class WarmupTaskTests extends AnyFunSuite {
+class WarmUpTaskTests extends AnyFunSuite {
 
   test("f_bitshift should return correct value for small values of x") {
     assert(f_bitshift(0) == 1)

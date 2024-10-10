@@ -1,4 +1,3 @@
-import main_task.{Identifier, Node, TreeUtils}
 import org.scalatest.funsuite.AnyFunSuite
 import main_task._;
 
@@ -52,7 +51,7 @@ class TreeUtilsTests extends AnyFunSuite {
     val replacement = Identifier("y")
 
     val result = TreeUtils.replace(tree, searchTree, replacement)
-    val expected = tree // No change should happen
+    val expected = tree
 
     assert(result == expected)
   }
@@ -70,7 +69,7 @@ class TreeUtilsTests extends AnyFunSuite {
 
   test("Replace entire tree") {
     val tree = Node(List(Identifier("a"), Identifier("b")))
-    val searchTree = tree // Search for the entire tree
+    val searchTree = tree
     val replacement = Node(List(Identifier("x"), Identifier("y")))
 
     val result = TreeUtils.replace(tree, searchTree, replacement)
