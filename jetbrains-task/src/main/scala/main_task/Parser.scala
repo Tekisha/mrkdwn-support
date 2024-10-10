@@ -7,11 +7,15 @@ object Parser {
    *  If the input is empty or contains only whitespace, it returns and error message.
    */
   private def tokenize(input: String): Either[String, List[String]] = {
-    val pattern = """\(|\)|[a-zA-Z0-9]+|\s+""".r
-    val tokens = pattern.findAllIn(input).toList.filterNot(_.trim.isEmpty)
+    val validPattern = """\(|\)|[a-zA-Z0-9]+""".r
+    val invalidPattern = """[^()\s\w]+""".r
 
-    if (tokens.nonEmpty) Right(tokens)
-    else Left("Input string is empty or contains only whitespace.")
+    invalidPattern.findFirstIn(input) match {
+      case Some(invalidToken) => Left(s"Invalid token encountered - $invalidToken")
+      case None =>
+        val tokens = validPattern.findAllIn(input).toList.filterNot(_.trim.isEmpty)
+        if (tokens.nonEmpty) Right(tokens) else Left("Input string is empty or contains only whitespace.")
+    }
   }
 
   /**
@@ -20,7 +24,7 @@ object Parser {
    * Handles errors like unmatched parentheses, unexpected end of input, and invalid tokens.
    */
   private def parse(tokens: List[String]): Either[String, (Tree, List[String])] = tokens match {
-    case Nil => Left("Unexpected end of input.")
+    case Nil => Left("Parsing failed: Unexpected end of input inside of node.")
 
     case "(" :: rest =>
       parseChildren(rest).map {
@@ -29,9 +33,9 @@ object Parser {
 
     case id :: rest if id.matches("[a-zA-Z0-9]+") => Right((Identifier(id), rest))
 
-    case ")" :: rest => Left("Unmatched closing parenthesis.")
+    case ")" :: rest => Left("Parsing failed: Unmatched closing parenthesis.")
 
-    case _ => Left("Invalid token encountered.")
+    case invalidToken :: _ => Left(s"Parsing failed: Invalid token encountered - $invalidToken")
   }
 
   /**
@@ -40,7 +44,7 @@ object Parser {
    * Handles nested structures and ensures no unmatched parentheses.
    */
   private def parseChildren(tokens: List[String], acc: List[Tree] = List()): Either[String, (List[Tree], List[String])] = tokens match {
-    case Nil => Left("Unexpected end of input inside of node.")
+    case Nil => Left("Parsing failed: Unexpected end of input inside of node.")
 
     case ")" :: rest => Right((acc, rest))
 
@@ -60,9 +64,11 @@ object Parser {
 
       case Right(tokens) => {
         parse(tokens) match {
-          case Left(error) => Left(s"Parsing failed: $error")
+          case Left(error) => Left(error)
 
           case Right((tree, Nil)) => Right(tree)
+
+          case Right((_, remainingTokens)) if remainingTokens.forall(_ == ")") => Left("Parsing failed: Unmatched closing parenthesis.")
 
           case Right((_, remainingTokens)) => Left(s"Parsing failed: Unconsumed tokens remain - ${remainingTokens.mkString(" ")}")
         }
