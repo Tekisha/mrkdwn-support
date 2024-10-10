@@ -51,3 +51,43 @@ The following grammar (in EBNF) describes the TL language:
 - `((a) (b))` - Nested nodes
 
 ---
+
+## Solution Structure
+
+### 1. **Tree Data Structure**
+
+The tree is represented using the following data structures in Scala:
+- **`Identifier`**: Represents a leaf node with a string value.
+- **`Node`**: Represents an internal node with a list of child trees.
+
+The base trait `Tree` contains methods to:
+- Check equality (`isEqual`)
+- Convert the tree to a string (`toString`)
+
+### 2. **Equality Check**
+
+Two trees are considered equal if:
+- **Identifiers**: The values of the identifiers are the same.
+- **Nodes**: They have the same number of children, and all children are recursively equal.
+
+### 3. **Serialization to TL**
+
+The method `toString` in both `Identifier` and `Node` classes handles the conversion of trees into their TL representation:
+- **Identifier**: Returns the identifier string.
+- **Node**: Returns the representation in parentheses with child trees separated by spaces.
+
+### 4. **Parsing TL Strings to Trees**
+
+The `Parser` object contains:
+- **`tokenize`**: Converts the input string into a list of tokens (identifiers, parentheses).
+- **`parse`**: Parses the tokenized list into a `Tree` structure using recursive descent.
+- **`parseString`**: The main entry point to convert a TL string to a `Tree`.
+
+### 5. **Tree Replacement**
+
+The method `replace` takes:
+- The original tree.
+- A `searchTree` to be found.
+- A `replacement` tree to replace all occurrences of the `searchTree`.
+
+This method recursively traverses the tree and replaces every subtree equal to `searchTree` with `replacement`.
