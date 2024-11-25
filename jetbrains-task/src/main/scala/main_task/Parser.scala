@@ -7,7 +7,7 @@ object Parser {
    *  If the input is empty or contains only whitespace, it returns and error message.
    */
   private def tokenize(input: String): Either[String, List[String]] = {
-    val validPattern = """\(|\)|[a-zA-Z0-9]+""".r
+    val validPattern = """_|\(|\)|[a-zA-Z0-9]+""".r
     val invalidPattern = """[^()\s\w]+""".r
 
     invalidPattern.findFirstIn(input) match {
@@ -30,11 +30,13 @@ object Parser {
       parseChildren(rest).map {
         case (children, remainingTokens) => (Node(children), remainingTokens)
       }
-
+      
     case id :: rest if id.matches("[a-zA-Z0-9]+") => Right((Identifier(id), rest))
 
     case ")" :: rest => Left("Parsing failed: Unmatched closing parenthesis.")
 
+    case "_" :: rest =>  Right((Placeholder(), rest))
+      
     case invalidToken :: _ => Left(s"Parsing failed: Invalid token encountered - $invalidToken")
   }
 

@@ -12,6 +12,14 @@ sealed trait Tree {
   def toString : String
 }
 
+case class Placeholder() extends Tree {
+  override def isEqual(other: Tree): Boolean = other match {
+    case Placeholder() => true
+    case _ => false
+  }
+  override def toString: String = "_"
+}
+
 /**
  * Case class `Identifier` represents a leaf node in the tree, containing a string value.
  * It implements:

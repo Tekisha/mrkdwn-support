@@ -76,4 +76,12 @@ class ParserTests extends AnyFunSuite {
         val expectedTree = Node(List(Identifier("identifier1"), Identifier("identifier2")))
         assert(result == Right(expectedTree))
     }
+
+    test("Test input") {
+        val input = "(_)"
+        val result = Parser.parseString(input)
+
+        print(result)
+        assert(result.isLeft)
+    }
 }
